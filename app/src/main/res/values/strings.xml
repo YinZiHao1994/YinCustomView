@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">YinCustomView</string>
+    <string name="title_activity_wave_progress_text">WaveProgressTextActivity</string>
+</resources>
