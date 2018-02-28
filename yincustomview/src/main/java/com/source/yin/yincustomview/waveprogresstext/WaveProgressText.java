@@ -2,6 +2,7 @@ package com.source.yin.yincustomview.waveprogresstext;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -11,9 +12,13 @@ import android.graphics.Path;
 import android.graphics.Shader;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.animation.LinearInterpolator;
 
+import com.source.yin.yincustomview.R;
+
 /**
+ * 海浪型填满文字的展示进度的 TextView
  * Created by yin on 2018/2/28.
  */
 
@@ -31,8 +36,8 @@ public class WaveProgressText extends android.support.v7.widget.AppCompatTextVie
     private int waveLength;
     //波长控制，view 的宽度除以此值即为波长，默认为1，即 view 的宽度刚好为一个完整波长
     private int waveLengthTag = 1;
-    //振幅控制，view 的高度除以此值即为贝塞尔曲线的控制点距离振幅原点的高度值（用来决定振幅），默认为4，即大约 view 的高度为4个振幅
-    private double swingTag = 4;
+    //振幅控制，view 的高度除以此值即为贝塞尔曲线的控制点距离振幅原点的高度值（用来决定振幅），默认为8，即大约 view 的高度为8个振幅
+    private double swingTag = 8;
     private int duration = 2000;
     private int waveColor = Color.WHITE;
 
@@ -47,6 +52,17 @@ public class WaveProgressText extends android.support.v7.widget.AppCompatTextVie
 
     public WaveProgressText(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.WaveProgressText,
+                defStyleAttr, 0);
+        int n = a.getIndexCount();
+        for (int i = 0; i < n; i++) {
+            int attr = a.getIndex(i);
+            if (attr == R.styleable.WaveProgressText_wave_color) {
+                this.waveColor = a.getColor(attr, Color.WHITE);
+            }
+        }
+        a.recycle();
     }
 
     @Override
@@ -62,6 +78,7 @@ public class WaveProgressText extends android.support.v7.widget.AppCompatTextVie
         super.onSizeChanged(w, h, oldw, oldh);
         width = w;
         height = h;
+        Log.d("yzh", "onSizeChanged");
         init();
     }
 
@@ -91,6 +108,7 @@ public class WaveProgressText extends android.support.v7.widget.AppCompatTextVie
     }
 
 
+    //获取波浪的 path
     private Path getPath() {
         int swing = (int) (height / swingTag);
         int dy = (int) (1.0 * height * progress / maxProgress);
